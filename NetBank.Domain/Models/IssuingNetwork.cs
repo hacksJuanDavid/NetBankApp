@@ -1,10 +1,12 @@
 using NetBank.Domain.Common;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NetBank.Domain.Models;
 
+[Table("issuingnetworks")]
 public class IssuingNetwork:EntityBase
-{
+{   
     [Required]
     public string Name { get; set; } = null!;
 

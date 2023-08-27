@@ -2,7 +2,7 @@ using Netbank.Application.Interfaces;
 using NetBank.Domain.Define;
 using NetBank.Domain.Dto;
 using NetBank.Domain.Models;
-using Pricat.Domain.Interfaces.Repositories;
+using NetBank.Domain.Interfaces.Repositories;
 
 namespace Netbank.Application.Services;
 
