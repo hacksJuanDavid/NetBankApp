@@ -160,3 +160,76 @@ Los Nombres de las variables y Funciones:
 # NOTAS
 
 Recuerde subir su codigo a su rama , en los directorios especificos, por favor no utilice otras rutas, de lo contratio **No podra ser calificado**
+
+## Endpoints
+
+### GET /api/v1/CreditCard/{creditcardNumber}
+
+## Ejemplo de Respuesta
+
+```json
+{
+  "issuingNetwork": "Visa",
+  "Valid": true
+}
+```
+
+## Dependencias del proyecto
+
+Project 'NetBank.Api' has the following package references
+[net7.0]:
+Top-level Package Requested Resolved
+
+> Microsoft.AspNetCore.OpenApi 7.0.10 7.0.10  
+> Microsoft.EntityFrameworkCore 7.0.10 7.0.10  
+> Microsoft.EntityFrameworkCore.Design 7.0.10 7.0.10  
+> Microsoft.EntityFrameworkCore.Tools 7.0.10 7.0.10  
+> MySql.EntityFrameworkCore 7.0.5 7.0.5  
+> Swashbuckle.AspNetCore 6.5.0 6.5.0
+
+Project 'NetBank.Domain' has the following package references
+[net7.0]: No packages were found for this framework.
+
+Project 'NetBank.Infrastructure' has the following package references
+[net7.0]:
+Top-level Package Requested Resolved
+
+> Microsoft.EntityFrameworkCore 7.0.10 7.0.10
+
+Project 'NetBank.Application' has the following package references
+[net7.0]: No packages were found for this framework.
+
+Project 'NetBank.Utilities' has the following package references
+[net7.0]: No packages were found for this framework.
+
+## Acceder al administrador de la base de datos mysql
+
+```
+mysql -u root -p
+```
+
+## Crear la base de datos
+
+```
+source  /home/thenowrock/RiderProjects/NetBankAppCleanArchitecture/Scripts/01_Create_DataBase.sql
+```
+
+## Crear el usuario
+
+```
+source  /home/thenowrock/RiderProjects/NetBankAppCleanArchitecture/Scripts/02_Create_User.sql
+```
+
+## Crear la tabla
+
+```
+source  /home/thenowrock/RiderProjects/NetBankAppCleanArchitecture/Scripts/03_Tab_IssuingNetworks.sql
+```
+
+## Insertar los datos
+
+```
+source  /home/thenowrock/RiderProjects/NetBankAppCleanArchitecture/Scripts/04_Ins_IssuingNetworks.sql
+```
+
+
