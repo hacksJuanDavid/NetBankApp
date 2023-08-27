@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Netbank.Application.Interfaces;
-using Netbank.Application.Services;
+using NetBank.Application.Services;
 using NetBank.Infrastructure.Context;
 using NetBank.Infrastructure.Repositories;
 using NetBank.Domain.Interfaces.Repositories;

@@ -4,7 +4,7 @@ using NetBank.Domain.Dto;
 using NetBank.Domain.Models;
 using NetBank.Domain.Interfaces.Repositories;
 
-namespace Netbank.Application.Services;
+namespace NetBank.Application.Services;
 
 public class CreditCardService: ICreditCardService
 {
@@ -28,9 +28,7 @@ public class CreditCardService: ICreditCardService
     }
 
     public async Task<ValidationResultType> Validate(string creditCardNumber)
-    {
-        // List<IssuingNetworkData> issuingNetworkDataList = await LoadIssuingNetworkData();
-
+    {   
         throw new NotImplementedException();
     }
 
