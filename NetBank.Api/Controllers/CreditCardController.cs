@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Netbank.Application.Interfaces;
+using NetBank.Application.Interfaces;
 using NetBank.Domain.Define;
 using NetBank.Domain.Dto;
 
