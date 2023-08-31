@@ -16,87 +16,68 @@ namespace NetBank.Application.Services
         {
             _issuingNetworkRepository = issuingNetworkRepository;
         }
-
         public async Task<ValidationResultType> Validate(string creditCardNumber)
-        {   
+        {
+            Console.WriteLine($"Validating credit card number: {creditCardNumber}");
+
             bool isValid = CreditCardValidator.IsValid(creditCardNumber);
 
             if (!isValid)
             {
+                Console.WriteLine("Invalid credit card number");
+                Result = new CreditCardResult("BadRequest", isValid);
                 return ValidationResultType.BadRequest;
-            }
-
-            List<IssuingNetwork> issuingNetworks = await GetIssuingNetworks();
-
-            if (issuingNetworks.Count == 0)
-            {
-                return ValidationResultType.NotFound;
             }
 
             List<IssuingNetworkData> issuingNetworkDataList = await LoadIssuingNetworkData();
 
-            IssuingNetworkData issuingNetworkData = issuingNetworkDataList.FirstOrDefault(x => x.Name == issuingNetworks[0].Name);
-
-            if (issuingNetworkData == null)
+            foreach (var network in issuingNetworkDataList)
             {
-                return ValidationResultType.NotFound;
+                Console.WriteLine($"IsInRange: {network.InRange?.MinValue} - {network.InRange?.MaxValue}");
+                if (network.StartsWithNumbers?.Any(number => creditCardNumber.StartsWith(number.ToString())) == true ||
+                    (network.InRange != null && CreditCardValidator.IsInRange(creditCardNumber, network.InRange.MinValue, network.InRange.MaxValue)))
+                {   
+                    Console.WriteLine($"Match found for {network.Name}");
+                    await GetIssuingNetworkData(network.Id);
+                    Result = new CreditCardResult(network.Name, isValid);
+                    return ValidationResultType.Ok;
+                }
             }
 
-            await GetIssuingNetworkData(issuingNetworkData.Id);
+            Console.WriteLine("No match found for any network");
+            Result = new CreditCardResult("NotFound", isValid);
+            return ValidationResultType.NotFound;
+        }
 
-            Result = new CreditCardResult(issuingNetworkData.Name, true);
 
-            return ValidationResultType.Ok;
+        private async Task<List<IssuingNetwork>> GetIssuingNetworks()
+        {
+            IEnumerable<IssuingNetwork> issuingNetworks = await _issuingNetworkRepository.GetAllAsync();
+
+            return (List<IssuingNetwork>)issuingNetworks;
+        }
+
+        private async Task GetIssuingNetworkData(int id)
+        {
+            IssuingNetwork issuingNetwork = await _issuingNetworkRepository.GetByIdAsync(id);
+
+            Result = new CreditCardResult(issuingNetwork.Name, true);
         }
 
         public CreditCardResult Result { get; set; }
 
         private async Task<List<IssuingNetworkData>> LoadIssuingNetworkData()
         {
-            // Replace this with your actual data retrieval logic
-            // For now, let's assume some sample data
-            List<IssuingNetworkData> issuingNetworkDataList = new List<IssuingNetworkData>
+            IEnumerable<IssuingNetwork> issuingNetworks = await _issuingNetworkRepository.GetAllAsync();
+            
+            return issuingNetworks.Select(network => new IssuingNetworkData
             {
-                new IssuingNetworkData
-                {
-                    Name = "Visa",
-                    StartsWithNumbers = new List<int> { 4 },
-                    InRange = new RangeNumber { MinValue = 13, MaxValue = 19 },
-                    AllowedLengths = new List<int> { 16 }
-                },
-                // Add more IssuingNetworkData instances as needed
-            };
-
-            return issuingNetworkDataList;
-        }
-
-        private async Task<List<IssuingNetwork>> GetIssuingNetworks()
-        {
-            // Replace this with your actual data retrieval logic
-            // For now, let's assume some sample data
-            List<IssuingNetwork> issuingNetworks = new List<IssuingNetwork>
-            {
-                new IssuingNetwork { Name = "Visa" },
-                // Add more IssuingNetwork instances as needed
-            };
-
-            return issuingNetworks;
-        }
-
-        private async Task GetIssuingNetworkData(int id)
-        {   
-            await Task.Yield();
-            // Replace this with your actual data retrieval logic
-            // For now, let's assume some sample data
-            IssuingNetworkData issuingNetworkData = new IssuingNetworkData
-            {
-                Name = "Visa",
-                StartsWithNumbers = new List<int> { 4 },
-                InRange = new RangeNumber { MinValue = 13, MaxValue = 19 },
-                AllowedLengths = new List<int> { 16 }
-            };
-
-            // Use the retrieved data as needed
+                Id = network.Id,
+                Name = network.Name,
+                StartsWithNumbers = network.StartsWithNumbers?.Split(',').Select(int.Parse).ToList(),
+                AllowedLengths = network.AllowedLengths.Split(',').Select(int.Parse).ToList(),
+                InRange = network.InRange
+            }).ToList();
         }
 
         Task<ValidationResultType> ICreditCardService.Validate(string creditCardNumber)

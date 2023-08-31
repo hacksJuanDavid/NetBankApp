@@ -1,4 +1,5 @@
 using System.Text;
+using NetBank.Domain.Dto;
 
 namespace NetBank.Utilities;
 
@@ -35,6 +36,7 @@ public static class CreditCardValidator
 
             timesTwo = !timesTwo;
         }
+
         return (sum % 10) == 0;
     }
 
@@ -46,6 +48,14 @@ public static class CreditCardValidator
             if (char.IsDigit(character))
                 digitsOnly.Append(character);
         }
+
         return digitsOnly;
+    }
+
+    public static bool IsInRange(string creditCardNumber, int min, int max)
+    {
+        var digitsOnly = GetDigits(creditCardNumber);
+
+        return digitsOnly.Length >= min && digitsOnly.Length <= max;
     }
 }
