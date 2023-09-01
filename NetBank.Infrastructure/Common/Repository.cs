@@ -24,15 +24,15 @@ namespace NetBank.Infrastructure.Common
 
         public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
         {
-            return await _appDbContext.Set<T>().Where(predicate).ToListAsync<T>();
+            return await _appDbContext.Set<T>().Where(predicate).ToListAsync();
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await _appDbContext.Set<T>().ToListAsync<T>();
+            return await _appDbContext.Set<T>().ToListAsync();
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<T?> GetByIdAsync(int id)
         {
             return await _appDbContext.Set<T>().FindAsync(id);
         }

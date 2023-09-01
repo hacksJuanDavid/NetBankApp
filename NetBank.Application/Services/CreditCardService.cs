@@ -82,7 +82,7 @@ namespace NetBank.Application.Services
         private async Task GetIssuingNetworkData(int id)
         {
             // Cache issuing network data
-            IssuingNetwork issuingNetwork = await _issuingNetworkRepository.GetByIdAsync(id);
+            IssuingNetwork? issuingNetwork = await _issuingNetworkRepository.GetByIdAsync(id);
 
             // Interface result
             Result = new CreditCardResult(issuingNetwork.Name, true);
