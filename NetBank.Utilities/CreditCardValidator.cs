@@ -51,11 +51,4 @@ public static class CreditCardValidator
 
         return digitsOnly;
     }
-
-    public static bool IsInRange(string creditCardNumber, int min, int max)
-    {
-        var digitsOnly = GetDigits(creditCardNumber);
-
-        return digitsOnly.Length >= min && digitsOnly.Length <= max;
-    }
 }

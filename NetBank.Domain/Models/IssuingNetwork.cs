@@ -13,7 +13,7 @@ public class IssuingNetwork:EntityBase
 
     public string? StartsWithNumbers { get; set; } = null!;
 
-    public RangeNumber? InRange { get; set; } = null!;
+    public string? InRange { get; set; } = null!;
 
     [Required]
     public string AllowedLengths { get; set; } = null!;
