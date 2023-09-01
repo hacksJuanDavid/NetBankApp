@@ -1,3 +1,6 @@
+# Autor
+Juan David Jimenez 
+
 # Evaluación Teórica (40%)
 
 Responda las preguntas del siguiente Enlace:
@@ -165,14 +168,6 @@ Recuerde subir su codigo a su rama , en los directorios especificos, por favor n
 
 ### GET /api/v1/CreditCard/{creditcardNumber}
 
-## Ejemplo de Respuesta
-
-```json
-{
-  "issuingNetwork": "Visa",
-  "Valid": true
-}
-```
 
 ## Dependencias del proyecto
 

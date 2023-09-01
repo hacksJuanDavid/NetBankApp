@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using NetBank.Application.Interfaces;
 using NetBank.Domain.Define;
 using NetBank.Domain.Dto;
@@ -10,55 +11,63 @@ namespace NetBank.Application.Services
     public class CreditCardService : ICreditCardService
     {
         private readonly IIssuingNetworkRepository _issuingNetworkRepository;
-        //private const string NUMBER_REGEX = "^[0-9]*$";
+        private const string NumberRegex = "^[0-9]*$";
 
         public CreditCardService(IIssuingNetworkRepository issuingNetworkRepository)
         {
             _issuingNetworkRepository = issuingNetworkRepository;
         }
-        
-        public CreditCardResult Result { get;  set; } = null!;
-        
+
+        public CreditCardResult Result { get; set; } = null!;
+
         public async Task<ValidationResultType> Validate(string creditCardNumber)
         {
             try
             {
-                Console.WriteLine($"Validating credit card number: {creditCardNumber}");
+                // Load issuing network data from database
+                List<IssuingNetworkData> issuingNetworkDataList = await LoadIssuingNetworkData();
 
+                // Check if credit card number is valid
                 bool isValid = CreditCardValidator.IsValid(creditCardNumber);
-
-                if (!isValid)
+                
+                // Check if there is any letter in credit card number
+                if (!Regex.IsMatch(creditCardNumber, NumberRegex))
                 {
-                    Console.WriteLine("Invalid credit card number");
                     Result = new CreditCardResult("Bad Request", isValid);
                     return ValidationResultType.BadRequest;
                 }
                 
-                List<IssuingNetworkData> issuingNetworkDataList = await LoadIssuingNetworkData();
-
-                foreach (var network in issuingNetworkDataList)
-                {   
-                    if (network.StartsWithNumbers?.Any(number => creditCardNumber.StartsWith(number.ToString())) == true ||
-                        (network.InRange != null && IsInRange(creditCardNumber, network.InRange)))
+                // If credit card number is not valid, return invalid
+                if (!isValid)
+                {
+                    foreach (var network in issuingNetworkDataList)
                     {
-                        Console.WriteLine($"Match found for {network.Name}");
+                        if (network.StartsWithNumbers?.Exists(number => creditCardNumber.StartsWith(number.ToString())) ==
+                            true ||
+                            (network.InRange != null &&
+                             CreditCardValidator.IsInRange(creditCardNumber, network.InRange)))
+                        {
+                            await GetIssuingNetworkData(network.Id);
+                            Result = new CreditCardResult(network.Name, isValid);
+                            return ValidationResultType.Ok;
+                        }
+                    }
+                }
+                
+                // Credit card number is valid, check if it is in range and return result
+                foreach (var network in issuingNetworkDataList)
+                {
+                    if (network.StartsWithNumbers?.Exists(number => creditCardNumber.StartsWith(number.ToString())) ==
+                        true ||
+                        (network.InRange != null && CreditCardValidator.IsInRange(creditCardNumber, network.InRange)))
+                    {
                         await GetIssuingNetworkData(network.Id);
                         Result = new CreditCardResult(network.Name, isValid);
                         return ValidationResultType.Ok;
                     }
-            
-                    if (network.StartsWithNumbers?.Any(number => creditCardNumber.StartsWith(number.ToString())) == true)
-                    {
-                        Console.WriteLine($"StartsWithNumbers match found for {network.Name}");
-                    }
-
-                    if (network.InRange != null && IsInRange(creditCardNumber, network.InRange))
-                    {
-                        Console.WriteLine($"InRange match found for {network.Name}");
-                    }
                 }
-
-                Console.WriteLine("No match found for any network");
+                
+                // Credit card number is not valid and not in range, return not found
                 Result = new CreditCardResult("Not Found", isValid);
                 return ValidationResultType.NotFound;
             }
@@ -69,69 +78,34 @@ namespace NetBank.Application.Services
             }
         }
 
-
+        // Get issuing network data from database
         private async Task GetIssuingNetworkData(int id)
         {
+            // Cache issuing network data
             IssuingNetwork issuingNetwork = await _issuingNetworkRepository.GetByIdAsync(id);
 
+            // Interface result
             Result = new CreditCardResult(issuingNetwork.Name, true);
         }
 
+        // Load issuing network data from database
         private async Task<List<IssuingNetworkData>> LoadIssuingNetworkData()
         {
+            // Cache issuing network data
             IEnumerable<IssuingNetwork> issuingNetworks = await _issuingNetworkRepository.GetAllAsync();
 
+            // Map to IssuingNetworkData
             return issuingNetworks.Select(network => new IssuingNetworkData
             {
                 Id = network.Id,
                 Name = network.Name,
                 StartsWithNumbers = network.StartsWithNumbers?.Split(',').Select(int.Parse).ToList(),
                 AllowedLengths = network.AllowedLengths.Split(',').Select(int.Parse).ToList(),
-                InRange = ParseRange(network.InRange)
+                InRange = CreditCardValidator.ParseRange(network.InRange)
             }).ToList();
         }
-        
-        private bool IsInRange(string creditCardNumber, RangeNumber range)
-        {
-            int numberLength = range.MinValue.ToString().Length;
-            
-            int initialDigists = int.Parse(creditCardNumber.Substring(0, numberLength));
-          
-    
-            Console.WriteLine("\n");
-            Console.WriteLine("Function IsInRange");
-            Console.WriteLine($"CardNumber: {initialDigists}, MinValue: {range.MinValue}, MaxValue: {range.MaxValue}");
 
-            var result = initialDigists >= range.MinValue && initialDigists <= range.MaxValue;
-            Console.WriteLine($"IsInRange: {result}");
-            return result;
-        }
-
-        
-        private RangeNumber? ParseRange(string? rangeString)
-        {
-            if (string.IsNullOrEmpty(rangeString)) return null;
-
-            var range = rangeString.Split('-');
-            if (range.Length != 2)
-            {
-                Console.WriteLine("Invalid range format");
-                return null;
-            }
-    
-            if (!int.TryParse(range[0], out int minValue) || !int.TryParse(range[1], out int maxValue))
-            {
-                Console.WriteLine("Invalid range values");
-                return null;
-            }
-    
-            Console.WriteLine("\n");
-            Console.WriteLine("Function ParseRange");
-            Console.WriteLine($"MinValue: {minValue}, MaxValue: {maxValue}");
-
-            return new RangeNumber(minValue, maxValue);
-        }
-
+        // ICreditCardService shared result property
         Task<ValidationResultType> ICreditCardService.Validate(string creditCardNumber)
         {
             return Validate(creditCardNumber);
