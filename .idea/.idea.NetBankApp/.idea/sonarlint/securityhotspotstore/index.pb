@@ -23,8 +23,6 @@ L
 NetBank.Api/appsettings.json,3/d/3dd865807d6431f25ea7346dc48ee3121bada59b
 Z
 *NetBank.Api/Properties/launchSettings.json,0/6/06092affa097dc1359cb92005681f60791c496c6
-X
-(NetBank.Utilities/CreditCardValidator.cs,9/8/9826a73016d4a681c858bca936022dd5ef19ba47
 [
 +NetBank.Infrastructure/Common/Repository.cs,d/7/d764496eff4c1ee3f8ca3fd34bce65bb63b5b638
 T

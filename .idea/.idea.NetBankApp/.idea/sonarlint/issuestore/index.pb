@@ -19,8 +19,6 @@ W
 'NetBank.Domain/Models/IssuingNetwork.cs,7/2/721e62de883cfab71868188b0b2b335129f89dfb
 Q
 !NetBank.Domain/Dto/RangeNumber.cs,c/b/cb2b8a79741396aa9f87534b91eb2b8c189f4d8f
-X
-(NetBank.Utilities/CreditCardValidator.cs,9/8/9826a73016d4a681c858bca936022dd5ef19ba47
 Z
 *NetBank.Api/Properties/launchSettings.json,0/6/06092affa097dc1359cb92005681f60791c496c6
 L
