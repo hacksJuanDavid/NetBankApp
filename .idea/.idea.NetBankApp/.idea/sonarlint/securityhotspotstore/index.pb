@@ -1,22 +1,10 @@
 
-F
-NetBank.Api/Program.cs,d/e/de2bddcf94c2b5df409e41baf38a546f9bff9b4d
-_
-/NetBank.Api/Controllers/CreditCardController.cs,1/a/1ac575c00d01754b72e19d25663095cfe8c3e879
-V
-&NetBank.Domain/Dto/CreditCardResult.cs,f/a/fa588bff223c80d3fe2a134b7215b0666e303f73
 s
 CNetBank.Domain/Interfaces/Repositories/IIssuingNetworkRepository.cs,8/b/8b1d6d7576b5a5a5b219b230bed8726ba4464d3f
-S
-#NetBank.Domain/Common/EntityBase.cs,4/f/4f41e8736b071759909a24d624a5bd8a88971e9d
 ]
 -NetBank.Domain/Define/ValidationResultType.cs,f/b/fb81cae627a371509cf487b0f601d97bd3198f8f
-X
-(NetBank.Domain/Dto/IssuingNetworkData.cs,9/6/965c6b60b7036cd90c7a864a559e84a9734e86b6
 d
 4NetBank.Application/Interfaces/ICreditCardService.cs,e/9/e9b8909f5826e69b1275bfa3e5219538b8a528a8
-W
-'NetBank.Domain/Models/IssuingNetwork.cs,7/2/721e62de883cfab71868188b0b2b335129f89dfb
 Q
 !NetBank.Domain/Dto/RangeNumber.cs,c/b/cb2b8a79741396aa9f87534b91eb2b8c189f4d8f
 L

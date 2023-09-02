@@ -34,7 +34,8 @@ public class CreditCardController : ControllerBase
                 return NotFound(result);
 
             default:
-                return StatusCode(StatusCodes.Status500InternalServerError, new CreditCardResult("Internal Server Error", false));
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new CreditCardResult("Internal Server Error", false));
         }
     }
 }

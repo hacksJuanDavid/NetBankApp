@@ -7,8 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\NetBank.Domain\NetBank.Domain.csproj" />
-      <ProjectReference Include="..\NetBank.Utilities\NetBank.Utilities.csproj" />
+        <ProjectReference Include="..\NetBank.Domain\NetBank.Domain.csproj"/>
+        <ProjectReference Include="..\NetBank.Utilities\NetBank.Utilities.csproj"/>
     </ItemGroup>
 
 

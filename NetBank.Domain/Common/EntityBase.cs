@@ -4,8 +4,6 @@ namespace NetBank.Domain.Common
 {
     public abstract class EntityBase
     {
-        [Key]
-        [Required]
-        public int Id { get; set; }
+        [Key] [Required] public int Id { get; set; }
     }
 }
