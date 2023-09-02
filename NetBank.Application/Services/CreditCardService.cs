@@ -29,20 +29,21 @@ namespace NetBank.Application.Services
 
                 // Check if credit card number is valid
                 bool isValid = CreditCardValidator.IsValid(creditCardNumber);
-                
+
                 // Check if there is any letter in credit card number
                 if (!Regex.IsMatch(creditCardNumber, NumberRegex))
                 {
                     Result = new CreditCardResult("Bad Request", isValid);
                     return ValidationResultType.BadRequest;
                 }
-                
+
                 // If credit card number is not valid, return invalid
                 if (!isValid)
                 {
                     foreach (var network in issuingNetworkDataList)
                     {
-                        if (network.StartsWithNumbers?.Exists(number => creditCardNumber.StartsWith(number.ToString())) ==
+                        if (network.StartsWithNumbers?.Exists(number =>
+                                creditCardNumber.StartsWith(number.ToString())) ==
                             true ||
                             (network.InRange != null &&
                              CreditCardValidator.IsInRange(creditCardNumber, network.InRange)))
@@ -53,7 +54,7 @@ namespace NetBank.Application.Services
                         }
                     }
                 }
-                
+
                 // Credit card number is valid, check if it is in range and return result
                 foreach (var network in issuingNetworkDataList)
                 {
@@ -66,7 +67,7 @@ namespace NetBank.Application.Services
                         return ValidationResultType.Ok;
                     }
                 }
-                
+
                 // Credit card number is not valid and not in range, return not found
                 Result = new CreditCardResult("Not Found", isValid);
                 return ValidationResultType.NotFound;
@@ -84,8 +85,13 @@ namespace NetBank.Application.Services
             // Cache issuing network data
             IssuingNetwork? issuingNetwork = await _issuingNetworkRepository.GetByIdAsync(id);
 
-            // Interface result
-            Result = new CreditCardResult(issuingNetwork.Name, true);
+
+            // If issuing network is null, throw exception
+            if (issuingNetwork != null)
+            {
+                // Interface result
+                Result = new CreditCardResult(issuingNetwork.Name, true);
+            }
         }
 
         // Load issuing network data from database
